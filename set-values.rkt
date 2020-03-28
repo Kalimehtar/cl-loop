@@ -24,5 +24,25 @@
      (let ((value-list (call-with-values (λ () value-form) list)))
        (set-values-list! variables value-list)))))
 
+(define-for-syntax (find-it stx)
+  (syntax-case stx ()
+    (() #f)
+    (((hd ...) tl ...) (find-it #'(hd ... tl ...)))
+    ((hd . tl) (if (eq? (syntax-e #'hd) 'it) #'hd (find-it #'tl)))))
 
-(provide set-values! destructuring-bind)
+(define-syntax (acond stx)
+  (syntax-case stx (else)
+    [(acond [else . else-body])
+     #'(begin . else-body)]
+    [(acond)
+     #'(void)]
+    [(acond [condition body ...] rest ...)
+     (with-syntax ((it (datum->syntax (or (find-it #'(body ...)) stx) 'it)))
+       #'(let ([it condition])
+           (if it
+               (begin body ...)
+               (acond rest ...))))]))
+
+
+
+(provide set-values! destructuring-bind acond)
