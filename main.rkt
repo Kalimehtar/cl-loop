@@ -8,8 +8,7 @@
 	(for-syntax racket)
 	(for-syntax "set-values.rkt")
 	"set-values.rkt"
-	 racket/generator
-         anaphoric/acond)
+	 racket/generator)       
        <define-end-of-generator>
        <local-macros>
        <supporting-functions>
@@ -19,7 +18,7 @@
        <all-the-rest>
        (define (macroexpand-1 datum)
 	 (syntax->datum (expand-once datum)))
-       (provide macroexpand-1 it)
+       (provide macroexpand-1)
        ]
 
 @section{Introduction}
@@ -1675,5 +1674,7 @@ to get the destructuring part to work.
 (define-for-syntax (print-syntax stx)
   (displayln (syntax->datum stx)))
 <list->hash>
+
+
 
 ]
